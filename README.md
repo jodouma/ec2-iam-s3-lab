@@ -134,27 +134,6 @@ python3 app.py
 
 You can also change the active bucket live from the web UI using the **Active S3 bucket** input and **Apply Bucket** button.
 
-## Repository access and clone options
-
-This is a **public repository**:
-
-- HTTPS works without SSH setup
-- SSH requires that your public SSH key is added to your GitHub account
-
-### Clone with HTTPS
-
-```bash
-git clone https://github.com/jodouma/ec2-iam-s3-lab.git
-cd ec2-iam-s3-lab
-```
-
-### Clone with SSH
-
-```bash
-git clone git@github.com:jodouma/ec2-iam-s3-lab.git
-cd ec2-iam-s3-lab
-```
-
 ## Environment Setup (Cross-Platform)
 
 Use the section that matches your machine **before cloning the repository**. The idea is:
@@ -240,6 +219,27 @@ After setup, clone the repository:
 
 ```bash
 git clone https://github.com/jodouma/ec2-iam-s3-lab.git
+cd ec2-iam-s3-lab
+```
+
+## Repository access and clone options
+
+This is a **public repository**:
+
+- HTTPS works without SSH setup
+- SSH requires that your public SSH key is added to your GitHub account
+
+### Clone with HTTPS
+
+```bash
+git clone https://github.com/jodouma/ec2-iam-s3-lab.git
+cd ec2-iam-s3-lab
+```
+
+### Clone with SSH
+
+```bash
+git clone git@github.com:jodouma/ec2-iam-s3-lab.git
 cd ec2-iam-s3-lab
 ```
 
