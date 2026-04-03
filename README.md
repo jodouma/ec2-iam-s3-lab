@@ -52,6 +52,7 @@ The important teaching point is that **the code does not embed credentials**. On
 - `S3_BUCKET_NAME` - defaults to `leaders-university-1337` and is the main place to change the target bucket dynamically
 - `S3_UPLOAD_PREFIX` - defaults to `uploads/`
 - `FLASK_ENV` - optional Flask environment, for example `development`
+- `HOST` - bind address, defaults to `0.0.0.0`
 - `PORT` - app port, defaults to `5000`; set it to `80` on EC2 if you want to access the app from the public instance IP on port 80
 
 Example:
@@ -88,6 +89,25 @@ python3 app.py
 ```
 
 If you do not want to clone, you can also copy the project folder directly onto the machine.
+
+## Run scripts
+
+Two helper scripts are included:
+
+- `scripts/run-dev.sh` → runs the app for development on `127.0.0.1:5000`
+- `scripts/run-prod.sh` → runs the app for production-style classroom demos on `0.0.0.0:80`
+
+Examples:
+
+```bash
+cd /home/jo/workspace/iam-role-s3-lab
+bash scripts/run-dev.sh
+```
+
+```bash
+cd /home/jo/workspace/iam-role-s3-lab
+sudo bash scripts/run-prod.sh
+```
 
 For local testing, use the standard AWS credential chain. Examples:
 

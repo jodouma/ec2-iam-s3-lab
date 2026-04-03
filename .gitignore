@@ -20,6 +20,7 @@ ENV/
 # Flask / local config
 .env
 .env.*
+!.env.example
 instance/
 
 # IDEs and OS files

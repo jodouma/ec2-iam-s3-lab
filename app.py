@@ -26,6 +26,7 @@ app = Flask(__name__)
 AWS_REGION = os.getenv("AWS_REGION") or None
 DEFAULT_S3_BUCKET_NAME = os.getenv("S3_BUCKET_NAME", "leaders-university-1337")
 S3_UPLOAD_PREFIX = os.getenv("S3_UPLOAD_PREFIX", "uploads/")
+HOST = os.getenv("HOST", "0.0.0.0")
 PORT = int(os.getenv("PORT", "5000"))
 IMAGE_EXTENSIONS = (".png", ".jpg", ".jpeg", ".gif", ".webp")
 ACTIVE_CONFIG = {"bucket_name": DEFAULT_S3_BUCKET_NAME}
@@ -437,4 +438,4 @@ def handle_botocore_error(exc: BotoCoreError):
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=PORT, debug=os.getenv("FLASK_ENV") == "development")
+    app.run(host=HOST, port=PORT, debug=os.getenv("FLASK_ENV") == "development")
