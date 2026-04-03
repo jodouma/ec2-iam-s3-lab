@@ -62,11 +62,11 @@ Request flow:
             │
    ┌────────┴─────────┐
    ▼                  ▼
-┌───────────┐   ┌───────────────┐
-│ AWS STS   │   │ Amazon S3     │
-│ GetCaller │   │ leaders-...   │
-│ Identity  │   │ bucket tests   │
-└───────────┘   └───────────────┘
+┌───────────────┐   ┌──────────────────┐
+│ AWS STS       │   │ Amazon S3        │
+│ Identity      │   │ Bucket Access    │
+│ (Who am I?)   │   │ (What can I do?) │
+└───────────────┘   └──────────────────┘
                      │
                      ├─ Test A: credentials available?
                      ├─ Test B: ListBucket works?
