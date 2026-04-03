@@ -33,6 +33,76 @@ Request flow:
 5. If read access exists, frontend calls `/api/images` and renders the gallery
 6. If upload is attempted, frontend calls `/api/upload-demo-image` then refreshes diagnostics
 
+### Architecture diagram
+
+```text
+ ┌──────────────────────┐
+ │ Browser / Student UI │
+ │  - status banner     │
+ │  - diagnostics       │
+ │  - gallery           │
+ │  - uploads           │
+ └──────────┬───────────┘
+            │ HTTP
+            ▼
+ ┌──────────────────────┐
+ │ Flask App            │
+ │  app.py              │
+ │  - /api/diagnostics  │
+ │  - /api/images       │
+ │  - /api/upload...    │
+ └──────────┬───────────┘
+            │ boto3 credential chain
+            ▼
+ ┌───────────────────────────────────────────────┐
+ │ AWS Credentials Source                        │
+ │  A) Local user / access key / profile         │
+ │  B) EC2 instance profile / IAM role           │
+ └──────────┬────────────────────────────────────┘
+            │
+   ┌────────┴─────────┐
+   ▼                  ▼
+┌───────────┐   ┌───────────────┐
+│ AWS STS   │   │ Amazon S3     │
+│ GetCaller │   │ leaders-...   │
+│ Identity  │   │ bucket tests   │
+└───────────┘   └───────────────┘
+                     │
+                     ├─ Test A: credentials available?
+                     ├─ Test B: ListBucket works?
+                     ├─ Test C: GetObject works?
+                     └─ Test D: PutObject works?
+```
+
+### Scenario logic diagram
+
+```text
+No credentials found
+  -> DO NOT HAVE ACCESS TO AWS / S3
+
+Credentials found, but ListBucket denied
+  -> DO NOT HAVE ACCESS TO LIST THE BUCKET
+
+ListBucket works, but GetObject denied
+  -> DO NOT HAVE READ ACCESS TO THE BUCKET OBJECTS
+
+GetObject works, but PutObject denied
+  -> DO NOT HAVE WRITE ACCESS TO THE BUCKET
+
+ListBucket + GetObject + PutObject work
+  -> FULL SUCCESS + gallery + upload works
+```
+
+### Identity source examples
+
+- **Local laptop / workstation:**
+  - AWS CLI profile
+  - environment variables
+  - IAM user access key
+- **EC2 classroom instance:**
+  - preferred approach: **instance profile / IAM role**
+  - no hardcoded credentials needed in the code
+
 ## How AWS credential resolution works at a high level
 
 The app uses the standard boto3 / botocore credential provider chain. That means it can automatically discover credentials from several sources, including:
@@ -87,15 +157,28 @@ cd ec2-iam-s3-lab
 
 ## Environment Setup (Cross-Platform)
 
-Use the section that matches your machine before creating the virtual environment and running the app.
+Use the section that matches your machine **before cloning the repository**. The idea is:
+
+1. Prepare the machine
+2. Install Git, Python, and AWS CLI
+3. Verify the tools
+4. Clone the repository
+5. Create the virtual environment and run the app
 
 ### Amazon Linux 2023 (EC2)
 
+Install the base tools first:
+
 ```bash
 sudo dnf update -y
-sudo dnf install -y git python3 python3-pip
+sudo dnf install -y git python3 python3-pip unzip curl
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip -q awscliv2.zip
+sudo ./aws/install
 python3 --version
 pip3 --version
+git --version
+aws --version
 ```
 
 Optional but recommended for port 80 access in a classroom EC2 demo:
@@ -106,33 +189,63 @@ sudo setcap 'cap_net_bind_service=+ep' $(readlink -f $(which python3))
 
 Or simply run the production script with `sudo`.
 
+After setup, clone the repository:
+
+```bash
+git clone https://github.com/jodouma/ec2-iam-s3-lab.git
+cd ec2-iam-s3-lab
+```
+
 ### Ubuntu 20.04+
+
+Install the required tools first:
 
 ```bash
 sudo apt update
-sudo apt install -y git python3 python3-venv python3-pip
+sudo apt install -y git python3 python3-venv python3-pip curl unzip
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip -q awscliv2.zip
+sudo ./aws/install
 python3 --version
 pip3 --version
+git --version
+aws --version
 ```
 
 If you want the app directly on port 80, either run the production script with `sudo` or place Nginx in front of the Flask app.
 
+After setup, clone the repository:
+
+```bash
+git clone https://github.com/jodouma/ec2-iam-s3-lab.git
+cd ec2-iam-s3-lab
+```
+
 ### macOS (Intel and Apple Silicon)
 
-Most modern macOS systems already include Python 3, but installing current tooling with Homebrew is recommended.
+Install the required tools first. Most modern macOS systems already include Python 3, but installing current tooling with Homebrew is recommended.
 
 ```bash
 brew update
-brew install git python
+brew install git python awscli
 python3 --version
 pip3 --version
+git --version
+aws --version
 ```
 
 If Homebrew is not installed, see: https://brew.sh/
 
+After setup, clone the repository:
+
+```bash
+git clone https://github.com/jodouma/ec2-iam-s3-lab.git
+cd ec2-iam-s3-lab
+```
+
 ## Installation steps
 
-After cloning the repository and installing Python 3:
+After your machine is prepared and the repository is cloned:
 
 ```bash
 cd ec2-iam-s3-lab
@@ -229,7 +342,10 @@ If you prefer not to run Python directly on port 80, you can keep the app on por
 
 ```bash
 sudo dnf update -y
-sudo dnf install -y git python3 python3-pip
+sudo dnf install -y git python3 python3-pip unzip curl
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip -q awscliv2.zip
+sudo ./aws/install
 git clone https://github.com/jodouma/ec2-iam-s3-lab.git
 cd ec2-iam-s3-lab
 python3 -m venv .venv
@@ -242,7 +358,10 @@ bash scripts/run-dev.sh
 
 ```bash
 sudo apt update
-sudo apt install -y git python3 python3-venv python3-pip
+sudo apt install -y git python3 python3-venv python3-pip curl unzip
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip -q awscliv2.zip
+sudo ./aws/install
 git clone https://github.com/jodouma/ec2-iam-s3-lab.git
 cd ec2-iam-s3-lab
 python3 -m venv .venv
@@ -254,7 +373,8 @@ bash scripts/run-dev.sh
 ### macOS quick start
 
 ```bash
-brew install git python
+brew update
+brew install git python awscli
 git clone https://github.com/jodouma/ec2-iam-s3-lab.git
 cd ec2-iam-s3-lab
 python3 -m venv .venv
@@ -276,6 +396,31 @@ http://<ec2-public-ip>
 ```
 
 The app already binds to `0.0.0.0`, so using the public EC2 IP works once networking is opened correctly.
+
+## AWS CLI setup and verification
+
+The app itself uses the standard boto3 credential chain, but the AWS CLI is useful for verifying identity and testing the environment before class.
+
+After installing AWS CLI, you can test your environment with:
+
+```bash
+aws --version
+aws sts get-caller-identity
+```
+
+Examples:
+
+- On EC2 with an attached IAM role, `aws sts get-caller-identity` should return the instance role identity
+- On your laptop, it will use your configured profile or environment variables
+
+Optional local configuration example:
+
+```bash
+aws configure
+aws sts get-caller-identity
+```
+
+This is especially helpful before launching the app so you can confirm the machine has usable AWS access.
 
 ## How to attach an IAM role to EC2
 
@@ -325,18 +470,6 @@ Recommended progression:
 ## Security note
 
 Prefer **IAM roles** over embedded access keys. Roles provide temporary credentials, reduce secret sprawl, simplify rotation, and are the recommended AWS approach for EC2 workloads.
-
-## Git notes
-
-To save the current project to the local git repository:
-
-```bash
-cd /home/jo/workspace/iam-role-s3-lab
-git add .
-git commit -m "Initial IAM role S3 classroom lab"
-```
-
-This project was prepared locally only and has not been pushed anywhere.
 
 ## Suggested class script summary
 
