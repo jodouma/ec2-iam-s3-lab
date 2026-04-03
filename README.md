@@ -168,13 +168,6 @@ sudo setcap 'cap_net_bind_service=+ep' $(readlink -f $(which python3))
 
 Or simply run the production script with `sudo`.
 
-After setup, clone the repository:
-
-```bash
-git clone https://github.com/jodouma/ec2-iam-s3-lab.git
-cd ec2-iam-s3-lab
-```
-
 ### Ubuntu 20.04+
 
 Install the required tools first:
@@ -193,13 +186,6 @@ aws --version
 
 If you want the app directly on port 80, either run the production script with `sudo` or place Nginx in front of the Flask app.
 
-After setup, clone the repository:
-
-```bash
-git clone https://github.com/jodouma/ec2-iam-s3-lab.git
-cd ec2-iam-s3-lab
-```
-
 ### macOS (Intel and Apple Silicon)
 
 Install the required tools first. Most modern macOS systems already include Python 3, but installing current tooling with Homebrew is recommended.
@@ -214,13 +200,6 @@ aws --version
 ```
 
 If Homebrew is not installed, see: https://brew.sh/
-
-After setup, clone the repository:
-
-```bash
-git clone https://github.com/jodouma/ec2-iam-s3-lab.git
-cd ec2-iam-s3-lab
-```
 
 ## Repository access and clone options
 
