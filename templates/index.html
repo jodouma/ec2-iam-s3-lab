@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IAM Role + S3 Classroom Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body
+    data-bucket-name="{{ bucket_name }}"
+    data-default-bucket-name="{{ default_bucket_name }}"
+    data-region="{{ aws_region }}"
+    data-upload-prefix="{{ upload_prefix }}"
+>
+    <div class="page-shell">
+        <header class="hero">
+            <div class="hero-badge">AWS IAM Role + S3 Lab</div>
+            <h1>EC2 IAM Roles vs S3 Permissions</h1>
+            <p class="hero-subtitle">
+                Watch the app move through credential detection, bucket listing, object reading, and object upload.
+            </p>
+            <div class="hero-meta">
+                <span><strong>Bucket:</strong> {{ bucket_name }}</span>
+                <span><strong>Region:</strong> {{ aws_region }}</span>
+                <span><strong>Upload prefix:</strong> {{ upload_prefix }}</span>
+            </div>
+        </header>
+
+        <main class="main-layout">
+            <section id="statusBanner" class="status-banner loading">
+                <div class="status-icon">⏳</div>
+                <div>
+                    <h2>Running diagnostics…</h2>
+                    <p>The app is checking AWS credentials, S3 listing, object reading, and uploads.</p>
+                </div>
+            </section>
+
+            <section id="gallerySection" class="card gallery-card hidden">
+                <div class="gallery-header">
+                    <div>
+                        <h3>Bucket image gallery</h3>
+                        <p>Displayed when read access is available.</p>
+                        <div class="gallery-meta">
+                            <span><strong>Bucket:</strong> {{ bucket_name }}</span>
+                            <span><strong>Region:</strong> {{ aws_region }}</span>
+                            <span><strong>Upload prefix:</strong> {{ upload_prefix }}</span>
+                        </div>
+                    </div>
+                    <div id="galleryCount" class="pill">0 images</div>
+                </div>
+                <div id="galleryGrid" class="gallery-grid"></div>
+            </section>
+
+            <section class="action-row card glass-card">
+                <div>
+                    <h3>Lab controls</h3>
+                    <p>Run diagnostics, or choose one or more files from your computer and upload them to the active bucket.</p>
+                </div>
+                <div class="button-group">
+                    <button id="refreshBtn" class="primary-btn">Run Diagnostics</button>
+                    <label for="fileInput" class="secondary-btn upload-label">Select File(s)</label>
+                    <input id="fileInput" type="file" accept="image/*" multiple hidden />
+                    <button id="uploadBtn" class="secondary-btn">Upload Selected Images</button>
+                </div>
+            </section>
+
+            <section class="card bucket-config-card">
+                <div class="bucket-config-layout">
+                    <div>
+                        <h3>Active S3 bucket</h3>
+                        <p>Change the bucket live from the app itself, then rerun diagnostics instantly.</p>
+                    </div>
+                    <div class="bucket-controls">
+                        <input id="bucketInput" type="text" class="bucket-input" value="{{ bucket_name }}" placeholder="leaders-university-1337" />
+                        <button id="applyBucketBtn" class="primary-btn">Apply Bucket</button>
+                    </div>
+                </div>
+                <p id="bucketHelpText" class="bucket-help-text">
+                    Default classroom bucket: <strong>{{ default_bucket_name }}</strong>
+                </p>
+            </section>
+
+            <section class="grid two-up">
+                <article class="card">
+                    <h3>What is happening?</h3>
+                    <div id="summaryCard" class="content-stack"></div>
+                </article>
+
+                <article class="card">
+                    <h3>Proposed fix</h3>
+                    <div id="fixCard" class="content-stack"></div>
+                </article>
+            </section>
+
+            <section class="grid two-up">
+                <article class="card">
+                    <h3>Diagnostics snapshot</h3>
+                    <div id="diagnosticsCard" class="diagnostics-list"></div>
+                </article>
+
+                <article class="card">
+                    <h3>Identity</h3>
+                    <div id="identityCard" class="content-stack mono"></div>
+                </article>
+            </section>
+
+            <section class="card tech-card">
+                <details>
+                    <summary>Technical details</summary>
+                    <pre id="technicalDetails">Waiting for diagnostics…</pre>
+                </details>
+            </section>
+
+        </main>
+    </div>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
