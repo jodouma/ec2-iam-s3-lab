@@ -64,6 +64,93 @@ python3 app.py
 
 You can also change the active bucket live from the web UI using the **Active S3 bucket** input and **Apply Bucket** button.
 
+## Repository access and clone options
+
+This is a **public repository**:
+
+- HTTPS works without SSH setup
+- SSH requires that your public SSH key is added to your GitHub account
+
+### Clone with HTTPS
+
+```bash
+git clone https://github.com/jodouma/ec2-iam-s3-lab.git
+cd ec2-iam-s3-lab
+```
+
+### Clone with SSH
+
+```bash
+git clone git@github.com:jodouma/ec2-iam-s3-lab.git
+cd ec2-iam-s3-lab
+```
+
+## Environment Setup (Cross-Platform)
+
+Use the section that matches your machine before creating the virtual environment and running the app.
+
+### Amazon Linux 2023 (EC2)
+
+```bash
+sudo dnf update -y
+sudo dnf install -y git python3 python3-pip
+python3 --version
+pip3 --version
+```
+
+Optional but recommended for port 80 access in a classroom EC2 demo:
+
+```bash
+sudo setcap 'cap_net_bind_service=+ep' $(readlink -f $(which python3))
+```
+
+Or simply run the production script with `sudo`.
+
+### Ubuntu 20.04+
+
+```bash
+sudo apt update
+sudo apt install -y git python3 python3-venv python3-pip
+python3 --version
+pip3 --version
+```
+
+If you want the app directly on port 80, either run the production script with `sudo` or place Nginx in front of the Flask app.
+
+### macOS (Intel and Apple Silicon)
+
+Most modern macOS systems already include Python 3, but installing current tooling with Homebrew is recommended.
+
+```bash
+brew update
+brew install git python
+python3 --version
+pip3 --version
+```
+
+If Homebrew is not installed, see: https://brew.sh/
+
+## Installation steps
+
+After cloning the repository and installing Python 3:
+
+```bash
+cd ec2-iam-s3-lab
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env   # optional, for your own reference
+python3 app.py
+```
+
+Open locally at:
+
+```text
+http://127.0.0.1:5000
+```
+
+If you do not want to clone, you can also copy the project folder directly onto the machine.
+
 ## How to run locally
 
 ```bash
@@ -75,20 +162,6 @@ python3 app.py
 ```
 
 Open: http://127.0.0.1:5000
-
-## Installation steps
-
-```bash
-git clone <your-repo-url> iam-role-s3-lab
-cd iam-role-s3-lab
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-cp .env.example .env   # optional, for your own reference
-python3 app.py
-```
-
-If you do not want to clone, you can also copy the project folder directly onto the machine.
 
 ## Run scripts
 
@@ -120,18 +193,24 @@ Do **not** hardcode keys into the project.
 ## How to run on EC2
 
 1. Launch an EC2 instance with Python 3 installed.
-2. Copy the project onto the instance.
+2. Clone the public repository onto the instance:
+
+```bash
+git clone https://github.com/jodouma/ec2-iam-s3-lab.git
+cd ec2-iam-s3-lab
+```
+
 3. Attach an IAM role to the instance.
 4. Allow inbound access in the EC2 Security Group:
    - port `80` from your classroom/public IP range, or `0.0.0.0/0` if this is only a temporary lab
 5. Install dependencies and run:
 
 ```bash
-cd /home/ec2-user/iam-role-s3-lab
+cd /home/ec2-user/ec2-iam-s3-lab
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-sudo PORT=80 /home/ec2-user/iam-role-s3-lab/.venv/bin/python3 app.py
+sudo PORT=80 /home/ec2-user/ec2-iam-s3-lab/.venv/bin/python3 app.py
 ```
 
 Then visit:
@@ -143,6 +222,46 @@ http://<ec2-public-ip>
 Because the app listens on `0.0.0.0`, it is reachable externally when the EC2 security group and OS firewall allow the chosen port.
 
 If you prefer not to run Python directly on port 80, you can keep the app on port 5000 and place Nginx in front of it as a reverse proxy.
+
+## Quick start by operating system
+
+### Amazon Linux 2023 quick start
+
+```bash
+sudo dnf update -y
+sudo dnf install -y git python3 python3-pip
+git clone https://github.com/jodouma/ec2-iam-s3-lab.git
+cd ec2-iam-s3-lab
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+bash scripts/run-dev.sh
+```
+
+### Ubuntu quick start
+
+```bash
+sudo apt update
+sudo apt install -y git python3 python3-venv python3-pip
+git clone https://github.com/jodouma/ec2-iam-s3-lab.git
+cd ec2-iam-s3-lab
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+bash scripts/run-dev.sh
+```
+
+### macOS quick start
+
+```bash
+brew install git python
+git clone https://github.com/jodouma/ec2-iam-s3-lab.git
+cd ec2-iam-s3-lab
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+bash scripts/run-dev.sh
+```
 
 ## Accessing via web on a public EC2 instance
 
