@@ -145,11 +145,18 @@ body {
     gap: 12px;
 }
 
+.action-row > div:first-child {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
 .button-group {
     display: flex;
     gap: 12px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-items: center;
+    justify-content: flex-end;
+    flex: 0 0 auto;
 }
 
 .bucket-config-layout {
@@ -188,6 +195,8 @@ button {
     font-weight: 800;
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+    min-height: 50px;
+    white-space: nowrap;
 }
 
 .upload-label {
@@ -375,5 +384,9 @@ button:disabled { opacity: 0.6; cursor: wait; }
 @media (max-width: 860px) {
     .grid.two-up { grid-template-columns: 1fr; }
     .action-row, .gallery-header, .status-banner, .bucket-config-layout { flex-direction: column; text-align: center; }
+    .button-group {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
     .bucket-input { min-width: min(100%, 320px); width: 100%; }
 }
