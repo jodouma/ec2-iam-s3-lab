@@ -122,7 +122,125 @@ SSH:
 git clone git@github.com:jodouma/ec2-iam-s3-lab.git
 ```
 
+## Setup by environment
+
+Choose your OS, prepare the machine first, then clone the repository, create the virtual environment, install Python dependencies, and run the app.
+
+### Amazon Linux 2023
+
+Install system dependencies first:
+
+```bash
+sudo dnf update -y
+sudo dnf install -y git python3 python3-pip curl unzip
+git --version
+python3 --version
+pip3 --version
+```
+
+Optional AWS CLI:
+
+```bash
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip -q awscliv2.zip
+sudo ./aws/install
+aws --version
+```
+
+Then clone and run:
+
+```bash
+git clone https://github.com/jodouma/ec2-iam-s3-lab.git
+cd ec2-iam-s3-lab
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+bash scripts/run-dev.sh
+```
+
+Direct alternative:
+
+```bash
+python3 app.py
+```
+
+### Ubuntu
+
+Install system dependencies first:
+
+```bash
+sudo apt update
+sudo apt install -y git python3 python3-venv python3-pip curl unzip
+git --version
+python3 --version
+pip3 --version
+```
+
+Optional AWS CLI:
+
+```bash
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip -q awscliv2.zip
+sudo ./aws/install
+aws --version
+```
+
+Then clone and run:
+
+```bash
+git clone https://github.com/jodouma/ec2-iam-s3-lab.git
+cd ec2-iam-s3-lab
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+bash scripts/run-dev.sh
+```
+
+Direct alternative:
+
+```bash
+python3 app.py
+```
+
+### macOS
+
+Install system dependencies first:
+
+```bash
+brew update
+brew install git python awscli
+git --version
+python3 --version
+pip3 --version
+aws --version
+```
+
+Then clone and run:
+
+```bash
+git clone https://github.com/jodouma/ec2-iam-s3-lab.git
+cd ec2-iam-s3-lab
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+bash scripts/run-dev.sh
+```
+
+Direct alternative:
+
+```bash
+python3 app.py
+```
+
+macOS usually uses `zsh`, but virtual environment activation is still the same:
+
+```bash
+source .venv/bin/activate
+```
+
 ## Quick start
+
+This quick start assumes **Git**, **Python 3**, **pip**, and **venv** are already installed.
 
 ```bash
 git clone https://github.com/jodouma/ec2-iam-s3-lab.git
@@ -179,51 +297,6 @@ Notes:
 - Port 80 may require `sudo` depending on the OS
 - On EC2, open port 80 or 5000 in the Security Group
 - Scripts fail cleanly if `.venv` is missing
-
-## OS setup
-
-### Amazon Linux 2023
-
-```bash
-sudo dnf update -y
-sudo dnf install -y git python3 python3-pip curl unzip
-```
-
-Optional AWS CLI:
-
-```bash
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-unzip -q awscliv2.zip
-sudo ./aws/install
-```
-
-### Ubuntu
-
-```bash
-sudo apt update
-sudo apt install -y git python3 python3-venv python3-pip curl unzip
-```
-
-Optional AWS CLI:
-
-```bash
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-unzip -q awscliv2.zip
-sudo ./aws/install
-```
-
-### macOS
-
-```bash
-brew update
-brew install git python awscli
-```
-
-macOS usually uses `zsh`, but virtualenv activation is still:
-
-```bash
-source .venv/bin/activate
-```
 
 ## Configuration
 
