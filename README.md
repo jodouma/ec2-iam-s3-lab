@@ -389,5 +389,5 @@ Prefer **IAM roles** over embedded access keys:
 The UI includes a small classroom footer:
 
 ```text
-Leaders University - Youssef Douma
+Leaders University - Wael Dimassi / Youssef Douma
 ```

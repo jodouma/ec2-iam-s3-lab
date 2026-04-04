@@ -30,7 +30,7 @@ HOST = os.getenv("HOST", "0.0.0.0")
 PORT = int(os.getenv("PORT", "5000"))
 IMAGE_EXTENSIONS = (".png", ".jpg", ".jpeg", ".gif", ".webp")
 ACTIVE_CONFIG = {"bucket_name": DEFAULT_S3_BUCKET_NAME}
-APP_SIGNATURE = "Leaders University - Youssef Douma"
+APP_SIGNATURE = "Leaders University - Wael Dimassi / Youssef Douma"
 
 
 STATE_DETAILS = {
