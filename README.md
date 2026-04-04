@@ -106,22 +106,6 @@ ListBucket + GetObject + PutObject work
 
 That distinction is the core teaching point of the project.
 
-## Repository access
-
-This repository is public.
-
-HTTPS:
-
-```bash
-git clone https://github.com/jodouma/ec2-iam-s3-lab.git
-```
-
-SSH:
-
-```bash
-git clone git@github.com:jodouma/ec2-iam-s3-lab.git
-```
-
 ## Setup by environment
 
 Choose your OS, prepare the machine first, then clone the repository, create the virtual environment, install Python dependencies, and run the app.
