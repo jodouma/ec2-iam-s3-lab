@@ -172,6 +172,14 @@ function renderTechnicalDetails(diag) {
     technicalDetails.textContent = JSON.stringify(diag, null, 2);
 }
 
+function updateUploadButtonState() {
+    const selectedCount = (fileInput?.files || []).length;
+    uploadBtn.classList.toggle('ready', selectedCount > 0);
+    uploadBtn.textContent = selectedCount > 0
+        ? `Upload ${selectedCount} Selected Image${selectedCount === 1 ? '' : 's'}`
+        : 'Upload Selected Images';
+}
+
 async function fetchJson(url, options = {}) {
     const response = await fetch(url, {
         headers: { 'Content-Type': 'application/json' },
@@ -265,9 +273,12 @@ async function uploadDemoImage() {
         }
 
         await loadDiagnostics();
-        if (result.uploaded?.length) {
+        if (result.reused_existing) {
+            alert(`Existing demo image reused: ${result.key}`);
+        } else if (result.uploaded?.length) {
             alert(`Upload succeeded: ${result.uploaded.length} file(s) uploaded.`);
             fileInput.value = '';
+            updateUploadButtonState();
         } else {
             alert(`Upload succeeded: ${result.key}`);
         }
@@ -282,4 +293,5 @@ async function uploadDemoImage() {
 refreshBtn.addEventListener('click', loadDiagnostics);
 uploadBtn.addEventListener('click', uploadDemoImage);
 applyBucketBtn.addEventListener('click', applyBucketChange);
+fileInput.addEventListener('change', updateUploadButtonState);
 window.addEventListener('DOMContentLoaded', loadDiagnostics);

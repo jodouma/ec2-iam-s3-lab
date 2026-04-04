@@ -1,6 +1,6 @@
 import base64
-import mimetypes
 import io
+import mimetypes
 import os
 import traceback
 from datetime import datetime, timezone
@@ -30,6 +30,7 @@ HOST = os.getenv("HOST", "0.0.0.0")
 PORT = int(os.getenv("PORT", "5000"))
 IMAGE_EXTENSIONS = (".png", ".jpg", ".jpeg", ".gif", ".webp")
 ACTIVE_CONFIG = {"bucket_name": DEFAULT_S3_BUCKET_NAME}
+APP_SIGNATURE = "Leaders University - Youssef Douma"
 
 
 STATE_DETAILS = {
@@ -186,6 +187,21 @@ def make_uploaded_file_key(filename: str) -> str:
     return f"{prefix}{stamp}-{safe_name}"
 
 
+def existing_demo_image_key(s3: Any) -> Optional[str]:
+    """
+    Keep demo-image generation classroom-friendly by reusing an existing generated
+    demo image when one is already present instead of filling the bucket with near-
+    identical files.
+    """
+    prefix = S3_UPLOAD_PREFIX if S3_UPLOAD_PREFIX.endswith("/") else f"{S3_UPLOAD_PREFIX}/"
+    response = s3.list_objects_v2(Bucket=current_bucket_name(), Prefix=prefix, MaxKeys=100)
+    for item in response.get("Contents", []):
+        key = item.get("Key", "")
+        if os.path.basename(key).startswith("iam-role-demo-") and key.lower().endswith(".png"):
+            return key
+    return None
+
+
 def list_candidate_images(s3: Any, limit: int = 200) -> List[Dict[str, Any]]:
     response = s3.list_objects_v2(Bucket=current_bucket_name(), MaxKeys=limit)
     candidates: List[Dict[str, Any]] = []
@@ -226,6 +242,10 @@ def attempt_read_test(s3: Any, image_keys: List[Dict[str, Any]]) -> Tuple[bool, 
 
 
 def attempt_upload_test(s3: Any) -> Tuple[bool, Optional[str], Optional[Dict[str, Any]]]:
+    existing_key = existing_demo_image_key(s3)
+    if existing_key:
+        return True, existing_key, None
+
     key = make_upload_key()
     body = build_demo_image_bytes()
     try:
@@ -345,6 +365,7 @@ def index() -> str:
         default_bucket_name=DEFAULT_S3_BUCKET_NAME,
         aws_region=AWS_REGION or "auto",
         upload_prefix=S3_UPLOAD_PREFIX,
+        app_signature=APP_SIGNATURE,
     )
 
 
@@ -411,6 +432,18 @@ def api_upload_demo_image():
     payload = request.get_json(silent=True) or {}
     requested_text = payload.get("text")
     s3, _, _ = aws_clients()
+
+    existing_key = existing_demo_image_key(s3)
+    if existing_key:
+        return jsonify(
+            {
+                "ok": True,
+                "message": "Existing demo image reused to avoid duplicates.",
+                "key": existing_key,
+                "reused_existing": True,
+            }
+        )
+
     key = make_upload_key()
     body = build_demo_image_bytes(requested_text)
 

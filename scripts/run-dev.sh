@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Run the classroom lab locally for development on localhost:5000.
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 VENV_PYTHON="$ROOT_DIR/.venv/bin/python3"
 

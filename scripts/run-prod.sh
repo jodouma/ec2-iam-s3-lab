@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Run the classroom lab for public/classroom access on 0.0.0.0:80.
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 VENV_PYTHON="$ROOT_DIR/.venv/bin/python3"
 
